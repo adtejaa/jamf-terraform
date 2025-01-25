@@ -1,24 +1,21 @@
 name: Terraform Plan-Apply
 
 on:
-  # Trigger on pull request creation or updates to .tf files
   pull_request:
     paths:
-      - '**/*.tf'
-
-  # Trigger on push to the main branch
+      - "**/*.tf"
   push:
     branches:
       - main
     paths:
-      - '**/*.tf'
+      - "**/*.tf"
+  workflow_dispatch: # Allows manual runs from the Actions tab
 
 jobs:
   validate_and_plan:
     name: Validate and Plan
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' # Supports PRs and manual triggers
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -56,7 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate_and_plan
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
