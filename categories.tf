@@ -1,7 +1,7 @@
 resource "jamfpro_category" "this" {
   for_each = {
   
-    "Testings"                = "21"
+    "Testings"                = "51"
   }
   name     = each.key
   priority = each.value
