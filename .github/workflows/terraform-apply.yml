@@ -39,7 +39,7 @@ jobs:
       - name: Terraform Init
         run: |
           echo "Initializing Terraform with Terraform Cloud backend..."
-          terraform init -input=false
+          terraform init
         env:
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
