@@ -1,15 +1,15 @@
 name: Terraform Plan and Apply
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Manual trigger
   pull_request:
     branches:
-      - "**"
+      - "**" # Trigger for any pull request targeting any branch
     paths:
-      - "**/*.tf"
+      - "**/*.tf" # Trigger only for Terraform file changes
   push:
     branches:
-      - main
+      - main # Trigger only for pushes to the main branch
     paths:
       - "**/*.tf"
 
@@ -70,7 +70,7 @@ jobs:
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      # Step 6: Terraform Plan (for pull requests only)
+      # Step 6: Terraform Plan (only for pull requests)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: |
@@ -81,11 +81,11 @@ jobs:
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      # Step 7: Terraform Apply (only on main branch or manual trigger)
+      # Step 7: Terraform Apply (only on main branch and manual triggers)
       - name: Terraform Apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: |
-          echo "Running Terraform Apply on main branch..."
+          echo "Running Terraform Apply on main branch or manual trigger..."
           terraform apply -auto-approve -input=false
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
