@@ -1,0 +1,80 @@
+name: Terraform Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-and-plan:
+    name: Validate and Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Terraform
+      - name: Set Up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Step 3: Terraform Validate
+      - name: Terraform Validate
+        env:
+          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
+          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
+          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+        run: terraform validate
+
+      # Step 4: Terraform Plan
+      - name: Terraform Plan
+        env:
+          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
+          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
+          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+        run: terraform plan -out=tfplan
+
+      # Step 5: Upload Plan for Review
+      - name: Upload Plan for Review
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: tfplan
+
+  apply:
+    name: Apply Changes
+    runs-on: ubuntu-latest
+    needs: validate-and-plan
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Terraform
+      - name: Set Up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Step 3: Download Plan
+      - name: Download Plan
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-plan
+          path: ./tfplan
+
+      # Step 4: Terraform Apply
+      - name: Terraform Apply
+        env:
+          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
+          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
+          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+        run: terraform apply -auto-approve tfplan
