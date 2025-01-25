@@ -32,9 +32,10 @@ jobs:
       # Step 3: Terraform Init
       - name: Terraform Init
         run: |
-          echo "Initializing Terraform..."
+          echo "Initializing Terraform with Terraform Cloud backend..."
           terraform init -input=false
         env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
@@ -46,6 +47,7 @@ jobs:
           echo "Running Terraform Plan for PR..."
           terraform plan -out=tfplan -input=false
         env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
@@ -61,9 +63,10 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: |
-          echo "Running Terraform Apply..."
+          echo "Running Terraform Apply on main branch..."
           terraform apply -auto-approve -input=false
         env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
