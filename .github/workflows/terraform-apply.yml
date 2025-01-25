@@ -1,125 +1,49 @@
-name: Terraform Plan-Apply Workflow
+name: Terraform Plan and Apply
 
 on:
   pull_request:
     paths:
-      - "**/*.tf"
+      - "**/*.tf" # Trigger on changes to .tf files in pull requests
   push:
     branches:
-      - main
+      - main # Trigger on pushes to the main branch
     paths:
       - "**/*.tf"
 
 jobs:
-  validate_and_plan:
-    name: Validate and Plan
+  terraform:
+    name: Terraform Plan and Apply
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.10.4
 
+      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
-
+      # Step 4: Terraform Plan (for pull requests only)
       - name: Terraform Plan
+        if: github.event_name == 'pull_request'
         run: terraform plan -out=tfplan
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      - name: Save Plan Results
-        if: success()
-        run: terraform show -json tfplan > plan.json
-
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-plan
-          path: plan.json
-
-      - name: Add PR Comment (Validate & Plan)
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const commentBody = `
-            Terraform Validation and Plan succeeded:
-            - ✅ Validation Successful
-            - ✅ Plan Successful
-            Please review the uploaded plan artifact and provide **LGTM** (Looks Good To Me) as a comment to proceed.
-            `;
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody
-            });
-
-  wait_for_lgtm:
-    name: Wait for LGTM Approval
-    runs-on: ubuntu-latest
-    needs: validate_and_plan
-    steps:
-      - name: Wait for LGTM
-        uses: actions/github-script@v6
-        id: wait_lgtm
-        with:
-          script: |
-            const lgtmComment = context.payload.pull_request.comments.find(comment => comment.body.toLowerCase().includes("lgtm"));
-            if (!lgtmComment) {
-              core.setFailed("No LGTM comment found. Please provide LGTM in the PR to proceed.");
-            }
-            console.log("LGTM found. Proceeding to apply.");
-
-  apply:
-    name: Apply Changes
-    runs-on: ubuntu-latest
-    needs: wait_for_lgtm
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.10.4
-
-      - name: Terraform Init
-        run: terraform init
-
+      # Step 5: Terraform Apply (for main branch only)
       - name: Terraform Apply
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
-
-     - name: Add PR Comment (Validate & Plan)
-  uses: actions/github-script@v6
-  if: github.event_name == 'pull_request'
-  with:
-    script: |
-      if (!context.payload.pull_request) {
-        throw new Error("This action is designed to run only on pull_request events.");
-      }
-      const commentBody = `
-      Terraform Validation and Plan succeeded:
-      - ✅ Validation Successful
-      - ✅ Plan Successful
-      Please review the uploaded plan artifact and provide **LGTM** (Looks Good To Me) as a comment to proceed.
-      `;
-      github.rest.issues.createComment({
-        issue_number: context.payload.pull_request.number,
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        body: commentBody
-      });
