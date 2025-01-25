@@ -3,10 +3,14 @@ name: Terraform Plan and Apply
 on:
   workflow_dispatch: # Manual trigger
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
     branches:
-      - "**" # Trigger for any pull request targeting any branch
+      - "**" # Trigger for pull requests targeting any branch
     paths:
-      - "**/*.tf" # Trigger only for Terraform file changes
+      - "**/*.tf" # Trigger only for changes to .tf files
   push:
     branches:
       - main # Trigger only for pushes to the main branch
