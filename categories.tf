@@ -3,6 +3,7 @@ resource "jamfpro_category" "this" {
   
     "autopkg"                = "20"
     "Terraform"              = "20"
+    "Testing"                = "21"
   }
   name     = each.key
   priority = each.value
