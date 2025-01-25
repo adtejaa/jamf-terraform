@@ -10,6 +10,7 @@ on:
     paths:
       - "**/*.tf"
   workflow_dispatch: # Enables manual triggering
+
 jobs:
   terraform:
     name: Terraform Plan and Apply
@@ -33,7 +34,9 @@ jobs:
       # Step 4: Terraform Plan (for pull requests only)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -out=tfplan
+        run: |
+          echo "Running Terraform Plan..."
+          terraform plan -out=tfplan
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
@@ -42,7 +45,9 @@ jobs:
       # Step 5: Terraform Apply (for main branch only)
       - name: Terraform Apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        run: |
+          echo "Running Terraform Apply..."
+          terraform apply -auto-approve
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
