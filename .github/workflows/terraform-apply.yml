@@ -8,7 +8,7 @@ on:
       - synchronize
       - reopened
     branches:
-      - "**" # Trigger for pull requests targeting any branch
+      - main # Trigger for pull requests targeting any branch
     paths:
       - "**/*.tf" # Trigger only for changes to .tf files
   push:
