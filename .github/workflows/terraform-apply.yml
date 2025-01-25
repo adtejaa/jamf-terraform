@@ -2,8 +2,10 @@ name: Terraform Plan and Apply
 
 on:
   pull_request:
+    branches:
+      - "**" # Trigger on any pull request
     paths:
-      - "**/*.tf" # Trigger on changes to .tf files in pull requests
+      - "**/*.tf" # Trigger only for .tf file changes
   push:
     branches:
       - main # Trigger only on pushes to the main branch
