@@ -3,9 +3,9 @@ name: Terraform Plan and Apply
 on:
   pull_request:
     branches:
-      - "**" # Trigger on any pull request
+      - "**" # Trigger on pull requests for any branch
     paths:
-      - "**/*.tf" # Trigger only for .tf file changes
+      - "**/*.tf" # Trigger only for changes to .tf files
   push:
     branches:
       - main # Trigger only on pushes to the main branch
@@ -19,21 +19,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.10.4
 
-      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
 
-      # Step 4: Terraform Plan (for pull requests only)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: |
@@ -44,7 +40,6 @@ jobs:
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      # Step 5: Terraform Apply (only on main branch after merge)
       - name: Terraform Apply
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
