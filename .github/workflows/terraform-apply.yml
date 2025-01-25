@@ -13,6 +13,12 @@ on:
     paths:
       - "**/*.tf"
 
+permissions: # Permissions explicitly added
+  contents: write # Required for checking out the repository
+  id-token: write # Required if you need OIDC or GitHub Actions token for auth
+  pull-requests: write # Required for pull request comments or updates
+  actions: read # Ensures workflows can access secrets and execute securely
+
 jobs:
   terraform:
     name: Terraform Plan and Apply
