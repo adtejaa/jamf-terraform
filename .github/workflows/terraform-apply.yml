@@ -17,37 +17,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.10.4
 
-      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
 
-      # Step 4: Terraform Plan (for pull requests only)
       - name: Terraform Plan
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "Running Terraform Plan..."
-          terraform plan -out=tfplan
+        run: terraform plan -out=tfplan
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      # Step 5: Terraform Apply (for main branch only)
       - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          echo "Running Terraform Apply..."
-          terraform apply -auto-approve
+        run: terraform apply -auto-approve
         env:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
