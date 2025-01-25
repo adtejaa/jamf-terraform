@@ -1,9 +1,4 @@
-resource "jamfpro_category" "this" {
-  for_each = {
-  
-    "Testings"                = "51"
-  }
-  name     = each.key
-  priority = each.value
+resource "jamfpro_category" "example_category_1" {
+name     = "tf-example-category-01"
 }
 
