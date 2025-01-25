@@ -103,13 +103,23 @@ jobs:
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
 
-      - name: Add PR Comment (Apply)
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "Terraform Apply has been successfully completed!"
-            });
+     - name: Add PR Comment (Validate & Plan)
+  uses: actions/github-script@v6
+  if: github.event_name == 'pull_request'
+  with:
+    script: |
+      if (!context.payload.pull_request) {
+        throw new Error("This action is designed to run only on pull_request events.");
+      }
+      const commentBody = `
+      Terraform Validation and Plan succeeded:
+      - ✅ Validation Successful
+      - ✅ Plan Successful
+      Please review the uploaded plan artifact and provide **LGTM** (Looks Good To Me) as a comment to proceed.
+      `;
+      github.rest.issues.createComment({
+        issue_number: context.payload.pull_request.number,
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        body: commentBody
+      });
