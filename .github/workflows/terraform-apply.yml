@@ -64,6 +64,9 @@ jobs:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+      # Step 5a: Refresh Terraform State Before Apply
+      - name: Refresh Terraform State Before Apply
+        run: terraform apply -refresh-only -auto-approve
 
       # Step 6: Terraform Plan (only for pull requests)
       - name: Terraform Plan
