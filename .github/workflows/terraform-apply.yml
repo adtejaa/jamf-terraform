@@ -86,3 +86,5 @@ jobs:
           TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+      
+    
