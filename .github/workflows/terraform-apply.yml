@@ -87,13 +87,4 @@ jobs:
           TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
           TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
       
-      - name: Save Terraform Token to File
-        run: echo "${{ secrets.TF_API_TOKEN }}" > terraform_token.txt
-
-      - name: Upload Terraform Token as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-token
-          path: terraform_token.txt
-
-
+    
