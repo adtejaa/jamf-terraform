@@ -48,11 +48,11 @@ resource "jamfpro_advanced_computer_search" "advanced_computer_search_001" {
 
   site_id = "1"
 
-display_fields = sort([
+display_fields = toset([
   "Activation Lock Manageable",
   "Apple Silicon",
-  "Available RAM Slots",
-  "Architecture Type"
+  "Architecture Type",
+  "Available RAM Slots"
 ])
 
 }
