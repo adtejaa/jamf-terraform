@@ -55,4 +55,7 @@ display_fields = toset([
   "Available RAM Slots"
 ])
 
+ lifecycle {
+    ignore_changes = [display_fields]
+  }
 }
