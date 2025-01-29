@@ -51,7 +51,8 @@ resource "jamfpro_advanced_computer_search" "advanced_computer_search_001" {
 display_fields = sort([
   "Activation Lock Manageable",
   "Apple Silicon",
-  "Available RAM Slots"
+  "Available RAM Slots",
+  "Architecture Type"
 ])
 
 }
