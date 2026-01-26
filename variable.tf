@@ -25,7 +25,7 @@ variable "x" {
 
 variable "test_list" {
 
-    default = ["one", "two", "three"]
+  default = ["one", "two", "three"]
 }
 
 variable "build_new" {

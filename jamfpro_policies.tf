@@ -22,23 +22,23 @@ resource "jamfpro_policy" "jamfpro_policy_00100001" {
     all_computers = false
     all_jss_users = false
 
-    computer_ids       = []
+    computer_ids = []
 
- 
-   
+
+
   }
 
-  
+
   payloads {
-   
+
 
     maintenance {
-      recon                       = true
+      recon = true
     }
     files_processes {
-      run_command            = "ls -lah /"
+      run_command = "ls -lah /"
     }
-    
+
   }
 
   lifecycle {

@@ -2,11 +2,11 @@ terraform {
   required_providers {
     jamfpro = {
       source  = "deploymenttheory/jamfpro"
-       version = "0.31.2"
+      version = "0.31.2"
     }
 
     vault = {
-      source = "hashicorp/vault"
+      source  = "hashicorp/vault"
       version = "5.6.0"
     }
   }

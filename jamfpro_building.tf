@@ -49,8 +49,8 @@ resource "jamfpro_building" "jamfpro_building_003" {
   country         = "The United States of America"
 
   lifecycle {
-     ignore_changes = [city]
-     create_before_destroy = true
+    ignore_changes        = [city]
+    create_before_destroy = true
   }
 }
 
@@ -64,8 +64,8 @@ resource "jamfpro_building" "jamfpro_building_004" {
   country         = "The United States of America"
 
   lifecycle {
-     ignore_changes = [city]
-     create_before_destroy = true
+    ignore_changes        = [city]
+    create_before_destroy = true
   }
 }
 
@@ -79,7 +79,7 @@ resource "jamfpro_building" "jamfpro_building_005" {
   country         = "The United States of America"
 
   lifecycle {
-     ignore_changes = [city]
-     create_before_destroy = true
+    ignore_changes        = [city]
+    create_before_destroy = true
   }
 }
