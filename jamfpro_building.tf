@@ -1,5 +1,26 @@
+data "vault_kv_secret_v2" "build_pfx" {
+  mount = "secret"
+  name  = "jamf/building"
+}
+
+data "vault_kv_secret_v2" "categor_pfx" {
+  mount = "secret"
+  name  = "jamf/category"
+}
+
+# output "building_prefix" {
+#   value = data.vault_kv_secret_v2.build_pfx.data["prefex"]
+#   sensitive = true
+# }
+
+output "building_prefix" {
+  value = data.vault_kv_secret_v2.categor_pfx
+  sensitive = true
+}
+
+
 resource "jamfpro_building" "jamfpro_building_001" {
-  name            = "Apple Park"
+  name            = "${data.vault_kv_secret_v2.build_pfx.data["prefex"]}-APPLE"
   street_address1 = "The McIntosh Tree"
   street_address2 = "One Apple Park Way"
   city            = "Cupertino"
@@ -9,11 +30,26 @@ resource "jamfpro_building" "jamfpro_building_001" {
 }
 
 resource "jamfpro_building" "jamfpro_building_002" {
-  name            = "Apple Park-01"
+  name            = "ABC-APPLE-01"
   street_address1 = "The McIntosh Tree"
   street_address2 = "One Apple Park Way"
   city            = "Cupertino"
   state_province  = "Californiaa"
   zip_postal_code = "950143"
   country         = "The United States of America"
+}
+
+resource "jamfpro_building" "jamfpro_building_003" {
+  name            = lower("${var.build_new}-pineapple-01")
+  street_address1 = "The McIntosh Tree"
+  street_address2 = "One Apple Park Way"
+  city            = "Cupertino"
+  state_province  = "Californiaa"
+  zip_postal_code = "1234"
+  country         = "The United States of America"
+
+  lifecycle {
+     ignore_changes = [city]
+     create_before_destroy = true
+  }
 }

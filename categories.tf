@@ -1,10 +1,15 @@
+locals {
+  start = 01
 
- resource "jamfpro_category" "example_category_191" {
-   name     = "tf-example-category-0911"
-   priority = 1
- }
+  categories = {
+    for n in range(0, 10) :
+    n => format("tf-example-category-%04d", local.start + n)
+  }
+}
 
- resource "jamfpro_category" "example_category_1191" {
-   name     = "tf-example-category-10911"
-   priority = 1
- }
+resource "jamfpro_category" "example_category" {
+  for_each = local.categories
+
+  name     = each.value
+  priority = 1
+}
