@@ -2,7 +2,7 @@ locals {
   start = 01
 
   categories = {
-    for n in range(0, 10) :
+    for n in range(0, 12) :
     n => format("tf-example-category-%04d", local.start + n)
   }
 }

@@ -33,17 +33,12 @@ terraform {
 #   }
 # }
 
-provider "vault" {
-  address = "http://127.0.0.1:8200"
-}
 
 
 
 provider "jamfpro" {
-  jamfpro_instance_fqdn = "https://commonwealdharmffjkr.jamfcloud.com"
-  basic_auth_username   = "palladh"
-  #   basic_auth_password                  = var.jamfpro_basic_auth_password
-  basic_auth_password = "dharma9848"
-  auth_method         = "basic"
+  jamfpro_instance_fqdn = var.jamfpro_instance_fqdn
+  auth_method           = "basic"
+  basic_auth_username   = var.jamfpro_basic_auth_username
+  basic_auth_password   = var.jamfpro_basic_auth_password
 }
-
