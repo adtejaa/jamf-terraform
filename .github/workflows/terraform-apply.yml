@@ -1,93 +1,48 @@
-name: Terraform Plan and Apply
+name: Terraform Checks
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  pull_request:
     paths:
       - "**/*.tf"
+      - "**/*.tfvars"
+      - "**/*.tfvars.json"
+      - ".tflint.hcl"
+  push:
+    branches: [ main ]
+    paths:
+      - "**/*.tf"
+      - "**/*.tfvars"
+      - "**/*.tfvars.json"
+      - ".tflint.hcl"
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  terraform:
-    name: Terraform Plan and Apply
+  checks:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the code
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      # Step 2: Debug TF_API_TOKEN
-      - name: Debug TF_API_TOKEN
-        run: |
-          if [ -z "$TF_API_TOKEN" ]; then
-            echo "TF_API_TOKEN is not set"
-            exit 1
-          else
-            echo "TF_API_TOKEN is set"
-          fi
-        env:
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-
-      # Step 3: Configure Terraform CLI
-      - name: Configure Terraform CLI
-        run: |
-          mkdir -p ~/.terraform.d
-          cat <<EOF > ~/.terraform.d/credentials.tfrc.json
-          {
-            "credentials": {
-              "app.terraform.io": {
-                "token": "${TF_API_TOKEN}"
-              }
-            }
-          }
-          EOF
-        env:
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-
-      # Step 4: Set up Terraform
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.4
 
-      # Step 5: Terraform Init
-      - name: Terraform Init
-        run: |
-          echo "Initializing Terraform with Terraform Cloud backend..."
-          terraform init -input=false
-        env:
-          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
-          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
-          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
-      # Step 5a: Refresh Terraform State Before Apply
-      - name: Refresh Terraform State Before Apply
-        run: terraform apply -refresh-only -auto-approve
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
 
-      # Step 6: Terraform Plan (only for pull requests)
-      - name: Terraform Plan
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "Running Terraform Plan for PR..."
-          terraform plan -out=tfplan -input=false
-        env:
-          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
-          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
-          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false -input=false
 
-      # Step 7: Terraform Apply (only on main branch and manual triggers)
-      - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        run: |
-          echo "Running Terraform Apply on main branch or manual trigger..."
-          terraform apply -auto-approve -input=false
-        env:
-          TF_VAR_jamfpro_basic_auth_username: ${{ secrets.JAMF_USERNAME }}
-          TF_VAR_jamfpro_basic_auth_password: ${{ secrets.JAMF_PASSWORD }}
-          TF_VAR_jamfpro_instance_fqdn: ${{ secrets.JAMF_URL }}
-      
-    
+      - name: Terraform validate
+        run: terraform validate
+
+      # Optional: tflint
+      - name: Setup tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: Run tflint
+        run: tflint --recursive
