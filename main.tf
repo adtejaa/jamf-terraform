@@ -18,7 +18,7 @@ terraform {
     organization = "commonwealdharmffjkr"
 
     workspaces {
-      name = "terraform-jamfpro-main"
+      name = "jamf-terraform"
     }
   }
 }
