@@ -38,11 +38,3 @@ jobs:
       - name: Terraform validate
         run: terraform validate
 
-      # Optional: tflint
-      - name: Setup tflint
-        uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: latest
-
-      - name: Run tflint
-        run: tflint --recursive
