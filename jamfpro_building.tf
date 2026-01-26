@@ -53,3 +53,18 @@ resource "jamfpro_building" "jamfpro_building_003" {
      create_before_destroy = true
   }
 }
+
+resource "jamfpro_building" "jamfpro_building_004" {
+  name            = lower("${var.build_new}-pineapple-04")
+  street_address1 = "The McIntosh Tree"
+  street_address2 = "One Apple Park Way"
+  city            = "Cupertino"
+  state_province  = "Californiaa"
+  zip_postal_code = "dfdfdfd"
+  country         = "The United States of America"
+
+  lifecycle {
+     ignore_changes = [city]
+     create_before_destroy = true
+  }
+}
