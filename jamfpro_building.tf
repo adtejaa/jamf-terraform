@@ -70,7 +70,7 @@ resource "jamfpro_building" "jamfpro_building_004" {
 }
 
 resource "jamfpro_building" "jamfpro_building_005" {
-  name            = lower("${var.build_new}-pineapple-05")
+  name            = lower("${var.build_new}-pineapple-056")
   street_address1 = "The McIntosh Tree"
   street_address2 = "One Apple Park Way"
   city            = "Cupertino"
