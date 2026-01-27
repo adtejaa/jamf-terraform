@@ -43,7 +43,7 @@ variable "jamfpro_instance_fqdn" {
 variable "jamfpro_auth_method" {
   description = "Auth method chosen for Jamf. Options are 'basic' or 'oauth2'."
   sensitive   = true
-  default     = "oauth2"
+  default     = "basic"
 }
 
 # variable "jamfpro_client_id" {
@@ -58,16 +58,16 @@ variable "jamfpro_auth_method" {
 #   default     = ""
 # }
 
-# variable "jamfpro_basic_auth_username" {
-#   description = "The Jamf Pro username used for authentication."
-#   default     = ""
-# }
+variable "jamfpro_basic_auth_username" {
+  description = "The Jamf Pro username used for authentication."
+  default     = ""
+}
 
-# variable "jamfpro_basic_auth_password" {
-#   description = "The Jamf Pro password used for authentication."
-#   sensitive   = true
-#   default     = ""
-# }
+variable "jamfpro_basic_auth_password" {
+  description = "The Jamf Pro password used for authentication."
+  sensitive   = true
+  default     = ""
+}
 
 variable "enable_client_sdk_logs" {
   description = "Enable client SDK logs."
