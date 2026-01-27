@@ -46,26 +46,25 @@ variable "jamfpro_auth_method" {
   default     = "basic"
 }
 
-variable "jamfpro_client_id" {
-  description = "The Jamf Pro Client ID for authentication."
-  sensitive   = true
-  default     = ""
-}
-
-variable "jamfpro_client_secret" {
-  description = "The Jamf Pro Client Secret for authentication."
-  sensitive   = true
-  default     = ""
-}
-
-# variable "jamfpro_auth_method" {
-#   description = "Auth method chosen for Jamf. Options are 'basic' or 'oauth2'."
-#   sensitive   = true
-#   default     = "basic"
-# }
-
 # variable "jamfpro_client_id" {
 #   description = "The Jamf Pro Client ID for authentication."
+#   sensitive   = true
+#   default     = ""
+# }
+
+# variable "jamfpro_client_secret" {
+#   description = "The Jamf Pro Client Secret for authentication."
+#   sensitive   = true
+#   default     = ""
+# }
+
+# variable "jamfpro_basic_auth_username" {
+#   description = "The Jamf Pro username used for authentication."
+#   default     = ""
+# }
+
+# variable "jamfpro_basic_auth_password" {
+#   description = "The Jamf Pro password used for authentication."
 #   sensitive   = true
 #   default     = ""
 # }
