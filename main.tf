@@ -39,7 +39,7 @@ terraform {
 provider "jamfpro" {
   jamfpro_instance_fqdn = var.jamfpro_instance_fqdn
   auth_method           = "basic"
-  # basic_auth_username   = var.jamfpro_basic_auth_username
-  # basic_auth_password   = var.jamfpro_basic_auth_password
+  basic_auth_username   = var.jamfpro_basic_auth_username
+  basic_auth_password   = var.jamfpro_basic_auth_password
 }
 
