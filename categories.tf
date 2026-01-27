@@ -1,5 +1,5 @@
 locals {
-  start = 021111
+  start = 11
 
   categories = {
     for n in range(0, 12) :
