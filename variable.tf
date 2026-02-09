@@ -108,3 +108,42 @@ variable "jamfpro_mandatory_request_delay_milliseconds" {
   default     = 1000
 }
 
+variable "dictionary" {
+  type = map(string)
+  default = {
+    "name" = "dharma"
+    "age"  = "30"
+  }
+
+}
+
+
+variable "object_test" {
+  type = object({
+    name = string,
+    age  = number
+  })
+
+
+  #   default = {
+  #     age = 10
+  #     name = "dharma"
+  #   }
+
+}
+
+variable "list_values" {
+  type = set(string)
+}
+
+
+variable "db_password" {
+  description = "The database password."
+  sensitive   = false
+  type        = string
+
+  validation {
+    condition     = length(var.db_password) >= 12
+    error_message = "idiotttt"
+  }
+}

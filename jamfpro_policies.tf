@@ -46,3 +46,11 @@ resource "jamfpro_policy" "jamfpro_policy_00100001" {
   }
 
 }
+
+module "test_policy" {
+  source = "./abc/modules/jamf_policies"
+
+  name        = "tf-simple-jamf-policy"
+  enabled     = false
+  run_command = "ls -lah /"
+}
