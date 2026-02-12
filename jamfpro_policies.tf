@@ -54,3 +54,34 @@ module "test_policy" {
   enabled     = false
   run_command = "ls -lah /"
 }
+
+moved {
+    from = jamfpro_policy.tf-simple-jamf-policy_new
+    to   = jamfpro_policy.tf-simple-jamf-policy
+}
+
+resource "jamfpro_policy" "abc" {
+  name        = "abc"
+  enabled     = true
+   
+  frequency = "Once per computer"
+
+  payloads {
+    
+  }
+  
+  scope {
+    all_computers = false
+    all_jss_users = false
+
+    computer_ids = []
+
+
+
+  }
+
+  provisioner "local-exec" {
+    command = "echo policy_created_${self.id} >> /tmp/policies.txt"
+  }
+}
+
